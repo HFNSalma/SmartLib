@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Service PostgreSQL
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: CatalogueDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Salma123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Service Catalogue
+  catalogue-service:
+    image: dcc/catalogue-service:latest
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/CatalogueDB
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Salma123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
+    driver: local
